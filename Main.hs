@@ -5,24 +5,20 @@ import Data.Char
 
 import System.Random
 
-
 import GameState
 import Board
 import Constants
 
 -------------------------------------------------------------
---Implementar neste ficheiro todo o co'digo que nao e' puro--
+-- Implementar neste ficheiro todo o código que não é puro
 -------------------------------------------------------------
+main :: IO ()
+main = do
+		putStr "Code"
 
---main :: IO ()
-
-
-
--- |Gera coordenada random
+-- gerar coordenadas random
 getRandomCoordinates :: IO Coord
 getRandomCoordinates = do
     x <- randomIO
     y <- randomIO
     return (x `mod` boardSize, y `mod` boardSize)
-
-

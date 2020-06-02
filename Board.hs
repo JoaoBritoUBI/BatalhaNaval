@@ -10,7 +10,7 @@ import Constants
 ------------------
 --Alteracoes devem ser devidamente justificadas.
 
--- |Representa um posicao no tabuleiro
+-- |Representa uma posicao no tabuleiro
 type Coord = (Int, Int)
 
 -- |Representa o estado de uma posicao no tabuleiro
