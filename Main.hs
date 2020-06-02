@@ -17,6 +17,7 @@ import Constants
 main :: IO ()
 main = do
         putStr "Ollaaaa\n"
+        putStr "Adddeeeeuuss\n"
 
 
 -- |Gera coordenada random
