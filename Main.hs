@@ -14,11 +14,8 @@ import Constants
 --Implementar neste ficheiro todo o co'digo que nao e' puro--
 -------------------------------------------------------------
 
-main :: IO ()
-main = do
-        putStr "Ollaaaa\n"
-        putStr "Adddeeeeuuss\n"
-        putStr "XAUUUU"
+--main :: IO ()
+
 
 
 -- |Gera coordenada random
