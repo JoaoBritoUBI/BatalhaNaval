@@ -3,35 +3,35 @@ module GameState where
 import Board
 
 -- |Representa o estado total do jogo, i.e. de ambos os tabuleiro
--- playerBoard: Tabuleiro onde o jogador coloca os seus navios e o computador ataca
--- computerBoard: Tabuleiro onde o computador coloca os seus navios e o jogador ataca 
 data GameState = GS 
     {
-        --Implementar
-
+        playerBoard::Board, -- Tabuleiro onde o jogador coloca os seus navios e o computador ataca
+        computerBoard::Board, -- Tabuleiro onde o computador coloca os seus navios e o jogador ataca 
+        isPlayer::Bool -- Boolean com informação de turnos, se for True joga o jogador, caso contrário joga o computador
     } 
 
 -- |Representa um tabuleiro. 
--- board: Funcao que representa os valores de cada posicao do tabuleio. E' obrigatorio utilizar uma funcao
--- ships: Contem inicialmente uma lista com todas as coordenadas de cada navio. ships esta' presente para ajudar a determinar quando um navio afunda.  
 data Board = Bd 
-    {   board :: BoardF, 
-        ships :: [[Coord]] 
+    {   board :: BoardF, -- Função que representa os valores de cada posição do tabuleio. É obrigatório utilizar uma função
+        ships :: [[Coord]] -- Contém inicialmente uma lista com todas as coordenadas de cada navio. Ships está presente para ajudar a determinar quando um navio afunda 
 
     } deriving Show
-
 
 -- |Estado inicial
 initialState :: GameState
 initialState = GS
     { 
-        -- declarar o estado inicial
+        playerBoard = emptyBoard,
+        computerBoard = emptyBoard,
+        isPlayer = True
     }
 
-
 emptyBoard :: Board
-emptyBoard = Bd {board = const Empty, ships=[]}
+emptyBoard = Bd {board = checkPosition [[(1,2)],[(2,2)]], ships=[]}
 
-
---Definir GameState como instancia de Show. Uma possivel declaracao da BoardF como instancia de Show encontra-se definida em Board.hs.
---instance Show GameState where
+--Definir GameState como instância de Show. Uma possível declaração da BoardF como instância de Show encontra-se definida em Board.hs.
+instance Show GameState where
+    show game = "\n"
+                ++ "|  Player  |\n" ++ show (playerBoard game) ++ "\n\n"
+                ++ "| Computer |\n" ++ show (computerBoard game) ++ "\n\n"
+                ++ "Player's turn? " ++ show (isPlayer game) ++ "\n"
