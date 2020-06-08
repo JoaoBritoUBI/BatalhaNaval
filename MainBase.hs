@@ -131,21 +131,8 @@ initializePlayerBoard currentShip = do state <- get
                                        
                                        else liftIO$ putStrLn "Done Generating Player Board!"
 
--- jogar
+-- play the game
 -- put (computerBoard initialState) {board = checkPosition [[(1,2)],[(2,2)]]}
-{--
-pn = "(1,1);(1,5)"
-nt1 = "(2,2);(5,2)"
-nt2 = "(3,4);(3,7)"
-ct1 = "(2,3);(2,5)"
-ct2 = "(5,4);(7,4)"
-ct3 = "(4,7);(6,7)"
-s1 = "(4,0);(4,1)"
-s2 = "(7,1);(7,2)"
-s3 = "(2,0);(3,0)"
-s4 = "(0,7);(1,7)"
---}
-
 
 -- let's play!
 initComputer = runStateT (initializeComputerBoard 0) initialState
