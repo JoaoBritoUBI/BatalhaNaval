@@ -2,22 +2,22 @@ module GameState where
 
 import Board
 
--- |Representa o estado total do jogo, i.e. de ambos os tabuleiro
+-- the state of the game (i.e. both boards)
 data GameState = GS 
     {
-        playerBoard::Board, -- Tabuleiro onde o jogador coloca os seus navios e o computador ataca
-        computerBoard::Board, -- Tabuleiro onde o computador coloca os seus navios e o jogador ataca 
-        isPlayer::Bool -- Boolean com informação de turnos, se for True joga o jogador, caso contrário joga o computador
+        playerBoard::Board, -- player's board (where the computer attacks)
+        computerBoard::Board, -- computer's board (where the player attacks)
+        isPlayer::Bool -- boolean value to indicate whose turn it is ("True" if it is the player's turn, "False" otherwise)
     } 
 
--- |Representa um tabuleiro. 
+-- the representation of a single board
 data Board = Bd 
-    {   board :: BoardF, -- Função que representa os valores de cada posição do tabuleio. É obrigatório utilizar uma função
-        ships :: [[Coord]] -- Contém inicialmente uma lista com todas as coordenadas de cada navio. Ships está presente para ajudar a determinar quando um navio afunda 
+    {   board :: BoardF, -- function that maps each "Coord" into a "PositionState"
+        ships :: [[Coord]] -- list of lists with the coordinates of every ship
 
     } deriving Show
 
--- |Estado inicial
+-- the game's initial state
 initialState :: GameState
 initialState = GS
     { 
@@ -26,10 +26,11 @@ initialState = GS
         isPlayer = True
     }
 
+-- the starter board (i.e. all cells are empty)
 emptyBoard :: Board
-emptyBoard = Bd {board = checkPosition [[(1,2)],[(2,2)]], ships=[]}
+emptyBoard = Bd {board = const Empty, ships=[]}
 
---Definir GameState como instância de Show. Uma possível declaração da BoardF como instância de Show encontra-se definida em Board.hs.
+-- instance of Show for GameState
 instance Show GameState where
     show game = "\n"
                 ++ "|  Player  |\n" ++ show (playerBoard game) ++ "\n\n"
