@@ -16,7 +16,7 @@ import AuxFunctions
 -- generates random coordinates
 getRandomCoordinates :: IO Coord
 getRandomCoordinates = do
-    x <- randomIO
+    x <- randomIOtr
     y <- randomIO
     return (x `mod` boardSize, y `mod` boardSize)
 
