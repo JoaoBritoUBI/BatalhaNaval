@@ -1,11 +1,11 @@
-**Projeto Final UC Paradigmas de Programação - Batalha Naval**
+**Battleship game implemented in *Haskell***
 
-**Desenvolvido por:** João Brito (m9984) e André Martins (m10157)
+**Developed by:** João Brito and André Martins
 
-# Instruções
+# Instructions
 
-# Detalhes de Implementação
+# Implementation Details
 
 # TO DO
-* Pesquisar (e implementar) algoritmos mais inteligentes para jogar o jogo (essencialmente, fazer o ficheiro **MainExpert.hs**)
-* Otimizar o código
+* Research and implement a smarter computer (*MainExpert.hs*)
+* Optimize and clean up the code
