@@ -4,16 +4,22 @@ import Board
 
 -- the state of the game (i.e. both boards)
 data GameState = GS 
-    {
-        playerBoard::Board, -- player's board (where the computer attacks)
-        computerBoard::Board, -- computer's board (where the player attacks)
-        isPlayer::Bool -- boolean value to indicate whose turn it is ("True" if it is the player's turn, "False" otherwise)
+    {   
+        -- player's boards
+        playerDefenseBoard::Board, -- the board where the player has its ships and the computer attacks
+        playerOffenseBoard::Board, -- the board where the player attacks, without knowing where the computer's ships are
+        playerMoves::[Coord],
+
+        -- computer's boards
+        computerDefenseBoard::Board, -- the board where the computer has its ships and the player attacks
+        computerOffenseBoard::Board, -- the board where the computer attacks, without knowing where the player's ships are
+        computerMoves::[Coord]
     } 
 
 -- the representation of a single board
 data Board = Bd 
     {   board :: BoardF, -- function that maps each "Coord" into a "PositionState"
-        ships :: [[Coord]] -- list of lists with the coordinates of every ship
+        ships :: [[Coord]] -- list of lists with the coordinates of every ship (obviously, the "playerOffenseBoard" and "computerOffenseBoard" will have an empty list)
 
     } deriving Show
 
@@ -21,9 +27,15 @@ data Board = Bd
 initialState :: GameState
 initialState = GS
     { 
-        playerBoard = emptyBoard,
-        computerBoard = emptyBoard,
-        isPlayer = True
+        -- player's boards
+        playerDefenseBoard = emptyBoard,
+        playerOffenseBoard = emptyBoard,
+        playerMoves = [],
+
+        -- computer's boards
+        computerDefenseBoard = emptyBoard,
+        computerOffenseBoard = emptyBoard,
+        computerMoves = []
     }
 
 -- the starter board (i.e. all cells are empty)
@@ -33,6 +45,5 @@ emptyBoard = Bd {board = const Empty, ships=[]}
 -- instance of Show for GameState
 instance Show GameState where
     show game = "\n"
-                ++ "|  Player  |\n" ++ show (playerBoard game) ++ "\n\n"
-                ++ "| Computer |\n" ++ show (computerBoard game) ++ "\n\n"
-                ++ "Player's turn? " ++ show (isPlayer game) ++ "\n"
+                ++ "|  Player's Ships  |\n" ++ show (playerDefenseBoard game) ++ "\n\n"
+                ++ "| Computer's Ships |\n" ++ show (computerDefenseBoard game) ++ "\n\n"

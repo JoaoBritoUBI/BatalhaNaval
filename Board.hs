@@ -9,23 +9,13 @@ import Constants
 type Coord = (Int, Int)
 
 -- state of each position
-data PositionState = Empty | Success | Fail deriving (Show, Eq)
+data PositionState = Empty | Miss | Hit | Ship | Sunken deriving (Show, Eq)
 
 -- function that maps a "Coord" to a "PositionState"
 type BoardF = Coord -> PositionState
 
 -- type that allows "PositionState" lists (i.e. a lines of the board) to have explicit indexes (more user friendly when displaying the board)
 type PrettyBoard = (Int,[PositionState])
-
--- functions that consumes the information of every cell's state and then returns a function that maps "Coord" to "PositionState" based on that information
--- "coordsState" has the structure [ [ (x,y) , ...] , [ (z,a) , ...] ], where: 
--- 1. the first sublist has the cells that HAVE ships and were bombed ("Success");
--- 2. the second sublist has the cells that DON'T HAVE ships and were bombed ("Fail"); 
--- 3. the remaining cells are obviously marked as "Empty"
-evalCell :: [[Coord]] -> BoardF
-evalCell coordsState coord = if(elem coord (coordsState!!0)) then Success
-                             else if(elem coord (coordsState!!1)) then Fail
-                             else Empty
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 -- IMPLEMENTATION OF SHOW FOR BOARDF
@@ -51,8 +41,10 @@ rowOfNumbers = "    " ++ concatMap (++"   ") [show n | n <- [0..(boardSize-1)]]
 -- maps a "PositionState" to a showable string
 showState :: PositionState -> String
 showState Empty    = "   |"
-showState Success  = " S |"
-showState Fail     = " X |"
+showState Miss     = " O |"
+showState Hit      = " X |"
+showState Ship     = " ` |"
+showState Sunken   = " * |"
 
 -- displays one line of the board
 showRow :: PrettyBoard -> String
