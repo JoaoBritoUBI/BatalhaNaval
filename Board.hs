@@ -18,7 +18,7 @@ type BoardF = Coord -> PositionState
 type PrettyBoard = (Int,[PositionState])
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
--- IMPLEMENTATION OF SHOW FOR BOARDF
+-- INSTANCE OF SHOW FOR BOARDF
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 instance Show BoardF where
     show = showBoard boardSize
@@ -41,8 +41,8 @@ rowOfNumbers = "    " ++ concatMap (++"   ") [show n | n <- [0..(boardSize-1)]]
 -- maps a "PositionState" to a showable string
 showState :: PositionState -> String
 showState Empty    = "   |"
-showState Miss     = " O |"
-showState Hit      = " X |"
+showState Miss     = " o |"
+showState Hit      = " x |"
 showState Ship     = " ` |"
 showState Sunken   = " * |"
 

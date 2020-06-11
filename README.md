@@ -7,6 +7,6 @@
 # Implementation Details
 
 # TO DO
-* Show an "Instructions" screen at the beginning of the game
 * Optimize and clean up the code
 * Research and implement a smarter computer (*MainExpert.hs*)
+* Solve the 2 proofs
