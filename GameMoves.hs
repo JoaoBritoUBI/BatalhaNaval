@@ -60,12 +60,12 @@ initializePlayerShips :: Int -> [[Coord]] -> IO [[Coord]]
 initializePlayerShips currentShip finalList = do 
                                                 if(currentShip/=numShips) then do
                                                     -- TEST VERSION
-                                                    --let n = testInputs !! currentShip
+                                                    let n = testInputs !! currentShip
                                                     
                                                     -- FINAL VERSION
-                                                    putStr ("\n" ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
+                                                    --putStr ("\n" ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
                                                     -- read and check the input
-                                                    n <-  getLine
+                                                    --n <-  getLine
 
                                                     if(n=="q") then return [[(-1,-1)]] -- leave the game
                                                     else do

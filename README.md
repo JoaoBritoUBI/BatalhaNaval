@@ -44,8 +44,14 @@ Both players go through the process of distributing the ships in their respectiv
 
 Once the ships are in place, the game starts with each player attacking in turns.
 
+As a side note, at any point, the player can press ***q*** to leave the game immediately.
+
 ## The Game
 The player will be able to see both boards (**defense** and **offense**) like in a traditional ***Battleship*** game:
+    
+	o--------------------------------------------------------o
+    |                          PLAY                          |
+    o--------------------------------------------------------o
 
 				Player's Offense Board
 
@@ -101,12 +107,12 @@ The player will be able to see both boards (**defense** and **offense**) like in
 
 From this point forward, both players will enter coordinates in the familiar format (i.e. (xValue,yValue)) and wait for the program to state the outcomes, like so:
 
-    o---------------------------------------------------------------------------------------------------------------------------o
-    |                                                       ROUND INFO                                                          |
-    o---------------------------------------------------------------------------------------------------------------------------o
-    | (Player) Coordinate (1,1) was a MISS!                                                                                     |
-    | (Computer) Coordinate (4,7) was a HIT!                                                                                    |
-    o---------------------------------------------------------------------------------------------------------------------------o
+    o--------------------------------------------------------o
+    |                       ROUND INFO                       |
+    o--------------------------------------------------------o
+    | (Player) Coordinate (1,1) was a MISS!                  |
+    | (Computer) Coordinate (4,7) was a HIT!                 |
+    o--------------------------------------------------------o
 
 Eventually, the game will come to an end with a message indicating the winner (or winners, in case of a tie). Then, the coordinates of every ship will be revealed.
 
