@@ -59,11 +59,11 @@ play init enter = do state <- get
                         liftIO$putStr "(Player) Attack position > "
                         
                         -- TEST VERSION
-                        playerMove <- liftIO$getComputerMove (playerMoves state)
-                        liftIO$putStrLn ((show playerMove) ++ "\n")
+                        --playerMove <- liftIO$getComputerMove (playerMoves state)
+                        --liftIO$putStrLn ((show playerMove) ++ "\n")
                         
                         -- FINAL VERSION
-                        --playerMove <- liftIO$getPlayerMove (playerMoves state)
+                        playerMove <- liftIO$getPlayerMove (playerMoves state)
                         
                         if(playerMove==(-1,-1)) then liftIO$putStrLn "\nLeaving the game...\n"
                         else do
@@ -136,7 +136,7 @@ play init enter = do state <- get
                                     -- case where the whole ship is bombed (i.e. should be updated to the state "Sunken")
                                     if((count Hit (map (board (playerDefenseBoard state)) ship))==((length ship)-1)) then
                                         do
-                                        liftIO$(showComputerRoundInfo playerMove Sunken)
+                                        liftIO$(showComputerRoundInfo computerMove Sunken)
                                         put state {
 
                                             -- update the computer's offense board
@@ -148,7 +148,7 @@ play init enter = do state <- get
 
                                     else -- case where a part of a ship was bombed
                                         do
-                                        liftIO$(showComputerRoundInfo playerMove Hit)
+                                        liftIO$(showComputerRoundInfo computerMove Hit)
                                         put state {
                                             -- update the computer's offense board
                                             computerOffenseBoard = (computerOffenseBoard state) {board = (\x -> if(x==computerMove) then Hit else ((board (computerOffenseBoard state)) x))},
@@ -157,7 +157,7 @@ play init enter = do state <- get
                                             playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(x==computerMove) then Hit else ((board (playerDefenseBoard state)) x))}
                                             }
                             else do
-                                liftIO$(showComputerRoundInfo playerMove Miss)
+                                liftIO$(showComputerRoundInfo computerMove Miss)
                                 put state {
                                     -- update the player's offense board
                                     computerOffenseBoard = (computerOffenseBoard state) {board = (\x -> if(x==computerMove) then Miss else ((board (computerOffenseBoard state)) x))},
