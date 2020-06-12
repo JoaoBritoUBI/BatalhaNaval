@@ -114,7 +114,13 @@ From this point forward, both players will enter coordinates in the familiar for
     | (Computer) Coordinate (4,7) was a HIT!                 |
     o--------------------------------------------------------o
 
-Eventually, the game will come to an end with a message indicating the winner (or winners, in case of a tie). Then, the coordinates of every ship will be revealed.
+Eventually, the game will come to an end with a message indicating the winner (or winners, in case of a tie). Then, the coordinates of every ship will be revealed:
+
+	o--------------------------------------------------------o
+	|                       GAME OVER                        |
+	o--------------------------------------------------------o
+
+	The player has won the game!
 
 ## The Verdict
 In general, the code makes use of both generic and Haskell specific functionalities, like:

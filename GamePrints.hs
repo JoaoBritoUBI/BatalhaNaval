@@ -72,7 +72,7 @@ showRoundInfo = do putStrLn "\no------------------------------------------------
 
 -- shows the "GameOver" interface
 showGameOver :: IO ()
-showGameOver = do putStrLn "\no--------------------------------------------------------o"
+showGameOver = do putStrLn "o--------------------------------------------------------o"
                   putStrLn "|                       GAME OVER                        |"
                   putStrLn "o--------------------------------------------------------o"
 
