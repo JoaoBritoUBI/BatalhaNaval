@@ -46,8 +46,8 @@ Once the ships are in place, the game starts with each player attacking in turns
 
 ## The Game
 The player will be able to see both boards (**defense** and **offense**) like in a traditional ***Battleship*** game:
-```c
-		    	Player's Offense Board
+
+		Player's Offense Board
 
          0   1   2   3   4   5   6   7   8   9
 	   +---+---+---+---+---+---+---+---+---+---+
@@ -72,9 +72,9 @@ The player will be able to see both boards (**defense** and **offense**) like in
 	9  |   |   |   |   |   |   |   |   |   |   |
 	   +---+---+---+---+---+---+---+---+---+---+
 
-		    	Player's Defense Board
+		Player's Defense Board
 
-		 0   1   2   3   4   5   6   7   8   9
+	0   1   2   3   4   5   6   7   8   9
 	   +---+---+---+---+---+---+---+---+---+---+
 	0  |   |   |   |   |   |   |   | ` |   |   |
 	   +---+---+---+---+---+---+---+---+---+---+
@@ -98,7 +98,7 @@ The player will be able to see both boards (**defense** and **offense**) like in
 	   +---+---+---+---+---+---+---+---+---+---+
 
 	(Player) Attack position >
-```
+
 From this point forward, both players will enter coordinates in the familiar format (i.e. (xValue,yValue)) and wait for the program to state the outcomes, like so:
 
     o---------------------------------------------------------------------------------------------------------------------------o
