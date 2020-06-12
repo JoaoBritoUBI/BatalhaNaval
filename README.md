@@ -47,7 +47,7 @@ Once the ships are in place, the game starts with each player attacking in turns
 ## The Game
 The player will be able to see both boards (**defense** and **offense**) like in a traditional ***Battleship*** game:
 
-		  Player's Offense Board
+		    Player's Offense Board
 
          0   1   2   3   4   5   6   7   8   9
 	   +---+---+---+---+---+---+---+---+---+---+
@@ -72,7 +72,7 @@ The player will be able to see both boards (**defense** and **offense**) like in
 	9  |   |   |   |   |   |   |   |   |   |   |
 	   +---+---+---+---+---+---+---+---+---+---+
 
-		  Player's Defense Board
+		    Player's Defense Board
 
 	     0   1   2   3   4   5   6   7   8   9
 	   +---+---+---+---+---+---+---+---+---+---+
