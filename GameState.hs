@@ -1,9 +1,11 @@
+-- contains PURE content
 module GameState where
 
 import Board
+import Constants
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- GAME'S BOARD RECORD AND GAMESTATE
+-- GAME'S BOARD RECORD AND GAMESTATE DECLARATION
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- the state of the game (i.e. boards and moves)
 data GameState = GS 
@@ -48,5 +50,5 @@ emptyBoard = Bd {board = const Empty, ships=[]}
 -- instance of Show for GameState
 instance Show GameState where
     show game = "\n"
-                ++ "|  Player's Ships  |\n" ++ show (playerDefenseBoard game) ++ "\n\n"
-                ++ "| Computer's Ships |\n" ++ show (computerDefenseBoard game) ++ "\n\n"
+                ++ "   " ++ (replicate (((5+(4*(boardSize-1))) - 14)`div`2) ' ') ++ "Player's Ships" ++ "\n" ++ show (playerDefenseBoard game) ++ "\n\n"
+                ++ "   " ++ (replicate (((5+(4*(boardSize-1))) - 16)`div`2) ' ') ++ "Computer's Ships" ++ "\n" ++ show (computerDefenseBoard game) ++ "\n\n"

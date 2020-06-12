@@ -1,19 +1,57 @@
+-- contains IMPURE and PURE content
 module AuxFunctions where
-
-import Data.List.Split
-import Text.Read hiding (get)
 
 import Board
 import Constants
 import GameState
+import Text.Read hiding (get)
+import Data.List
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- AUXILIARY FUNCTIONS (THAT ARE PURE)
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- AUXILIARY, GENERAL PURPOSE, FUNCTIONS (IMPURE)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- checks if the game has ended (i.e. when all the ships of one player have sunken)
+hasGameEnded :: GameState -> Int
+hasGameEnded state = do let playerWon = if((count Sunken (map (board (computerDefenseBoard state)) (concat (ships (computerDefenseBoard state)))))==(sum shipSizes)) then True else False
+                        let computerWon = if((count Sunken (map (board (playerDefenseBoard state)) (concat (ships (playerDefenseBoard state)))))==(sum shipSizes)) then True else False
+                        
+                        -- retrieve the final decision
+                        if(playerWon && computerWon) then 3 -- there has been a tie
+                        else if(computerWon) then 2 -- only the computer has won
+                             else if(playerWon) then 1 -- only the player has won
+                                  else 0 -- the game must go on
+
 -- retrieves the Coord value encapsulated by the Maybe type
 fromJust :: Maybe Coord -> Coord
 fromJust (Just a) = a
 fromJust Nothing = (-1,-1)
+
+-- retrieves the Int value encapsulated by the Maybe type
+fromJustInt :: Maybe Int -> Int
+fromJustInt (Just a) = a
+fromJustInt Nothing = -1
+
+-- split the input string ("string") on the given character "char"
+splitOn :: Char -> String -> [String]
+splitOn char string = do let index = elemIndex ';' string
+                         if(index==Nothing) then []
+                         else (tupleToList (splitAt (fromJustInt index) string))
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- AUXILIARY, GENERAL PURPOSE, FUNCTIONS (PURE)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- transforms a tuple of lists into a list of lists (with a special case for the second part "b")
+tupleToList :: ([Char],[Char]) -> [[Char]]
+tupleToList (a,b) = [a,tail b]
+
+-- parses the input string (supposedly, two coordinates separated by a ";") and converts it into "Coord" format
+parseInput :: String -> [Coord]
+parseInput rawCoords = do let aux = (splitOn ';' rawCoords) 
+                          if((length aux)/=2) then [(-1,-1)]
+                          else do 
+                              let coords = (map (\x -> readMaybe x :: Maybe Coord) aux)
+                              if(elem Nothing coords) then [(-1,-1)]
+                              else (map fromJust coords)
 
 -- counts how many occurrences of "positionState" are there in "positionStateList"
 count :: PositionState -> [PositionState] -> Int
@@ -27,9 +65,13 @@ hasShip coord ships = elem True (map (\x -> elem coord x) ships)
 getShipSize :: Coord -> Coord -> Int
 getShipSize startCoord endCoord = (abs ((fst startCoord)-(fst endCoord))) + (abs ((snd startCoord)-(snd endCoord))) + 1
 
+-- checks if the given coordinate ("coord") fits inside the board
+properCoord :: Coord -> Bool
+properCoord coord = coord>=(0,0) && coord<(boardSize,boardSize)
+
 -- checks if we can place a ship ("shipCoords") within the given coordinates ("otherShips")
 checkCoords :: [Coord] -> [[Coord]] -> Bool
-checkCoords shipCoords otherShips = (head shipCoords)>=(0,0) && (head shipCoords)<=(boardSize-1,boardSize-1) && (head (reverse shipCoords))>=(0,0) && (head (reverse shipCoords))<=(boardSize-1,boardSize-1) -- check if the ship extends outside of the boards' limits
+checkCoords shipCoords otherShips = (properCoord (head shipCoords)) && (properCoord (head (reverse shipCoords)))  -- check if the ship extends outside of the boards' limits
                                     && (doesntOverlap shipCoords otherShips) -- check if this ship doesn't overlap with other ships
 
 -- computes the missing coordinates between "startCoord" and "endCoord"

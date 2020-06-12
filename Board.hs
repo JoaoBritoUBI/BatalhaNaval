@@ -1,3 +1,4 @@
+-- contains PURE content
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 
 module Board where
@@ -5,6 +6,9 @@ module Board where
 import Data.List
 import Constants
 
+---------------------------------------------------------------------------------------------------------------------------------------------
+-- DATA TYPES DECLARATIONS
+---------------------------------------------------------------------------------------------------------------------------------------------
 -- type to represent each position on the board
 type Coord = (Int, Int)
 
@@ -36,7 +40,7 @@ toPrettyBoard listBoard index = if(index/=boardSize) then [(index,listBoard !! i
 
 -- creates a string with column numbers
 rowOfNumbers :: String
-rowOfNumbers = "    " ++ concatMap (++"   ") [show n | n <- [0..(boardSize-1)]]
+rowOfNumbers = "  " ++ concat [if(n<10) then ("   " ++ (show n)) else ("  " ++ (show n)) | n <- [0..(boardSize-1)]]
 
 -- maps a "PositionState" to a showable string
 showState :: PositionState -> String
@@ -48,13 +52,13 @@ showState Sunken   = " * |"
 
 -- displays one line of the board
 showRow :: PrettyBoard -> String
-showRow l = (show (fst l)) ++ " " ++ '|' : concatMap showState (snd l) ++ "\n"
+showRow l = if((fst l)<10) then ((show (fst l)) ++ "  " ++ '|' : concatMap showState (snd l) ++ "\n") else ((show (fst l)) ++ " " ++ '|' : concatMap showState (snd l) ++ "\n")
 
 -- displays the top and bottom of one line of the board
 showLine :: Int -> String
 showLine size = 
     let l = replicate size "---+"
-    in "  " ++ '+' : concat l ++ "\n"
+    in "   " ++ '+' : concat l ++ "\n"
 
 -- creates a list version of the board based on the information from the "board" function
 toList :: Int -> BoardF -> [[PositionState]]
