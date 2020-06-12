@@ -1,9 +1,16 @@
--- contains IMPURE and PURE content
+-- contains PURE and IMPURE content
 module GamePrints where
 
 import Board
 import Constants
 import GameState
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- AUXILIARY FUNCTION RELATED TO THE GAME'S INTERFACE (PURE)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- returns the number os spaces that a string needs
+numSpaces :: Coord -> Int -> Int
+numSpaces coord baseLength = (125 - baseLength - (length (show coord)) - 1)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS RELATED TO THE GAME'S INTERFACE (IMPURE)
@@ -91,10 +98,3 @@ showComputerRoundInfo :: Coord -> PositionState -> IO ()
 showComputerRoundInfo coord positionState = do if(positionState==Sunken) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " lead to a SUNKEN SHIP!" ++ (replicate (numSpaces coord 47) ' ') ++ "|") 
                                                else if(positionState==Hit) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " was a HIT!" ++ (replicate (numSpaces coord 35) ' ') ++ "|") 
                                                     else putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " was a MISS!" ++ (replicate (numSpaces coord 36) ' ') ++ "|") 
-
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- AUXILIARY FUNCTIONS RELATED TO THE GAME'S INTERFACE (PURE)
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- returns the number os spaces that a string needs
-numSpaces :: Coord -> Int -> Int
-numSpaces coord baseLength = (125 - baseLength - (length (show coord)) - 1)

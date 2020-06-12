@@ -1,4 +1,4 @@
--- contains IMPURE and PURE content
+-- contains PURE and IMPURE content
 module AuxFunctions where
 
 import Board
@@ -6,36 +6,6 @@ import Constants
 import GameState
 import Text.Read hiding (get)
 import Data.List
-
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- AUXILIARY, GENERAL PURPOSE, FUNCTIONS (IMPURE)
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- checks if the game has ended (i.e. when all the ships of one player have sunken)
-hasGameEnded :: GameState -> Int
-hasGameEnded state = do let playerWon = if((count Sunken (map (board (computerDefenseBoard state)) (concat (ships (computerDefenseBoard state)))))==(sum shipSizes)) then True else False
-                        let computerWon = if((count Sunken (map (board (playerDefenseBoard state)) (concat (ships (playerDefenseBoard state)))))==(sum shipSizes)) then True else False
-                        
-                        -- retrieve the final decision
-                        if(playerWon && computerWon) then 3 -- there has been a tie
-                        else if(computerWon) then 2 -- only the computer has won
-                             else if(playerWon) then 1 -- only the player has won
-                                  else 0 -- the game must go on
-
--- retrieves the Coord value encapsulated by the Maybe type
-fromJust :: Maybe Coord -> Coord
-fromJust (Just a) = a
-fromJust Nothing = (-1,-1)
-
--- retrieves the Int value encapsulated by the Maybe type
-fromJustInt :: Maybe Int -> Int
-fromJustInt (Just a) = a
-fromJustInt Nothing = -1
-
--- split the input string ("string") on the given character "char"
-splitOn :: Char -> String -> [String]
-splitOn char string = do let index = elemIndex ';' string
-                         if(index==Nothing) then []
-                         else (tupleToList (splitAt (fromJustInt index) string))
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY, GENERAL PURPOSE, FUNCTIONS (PURE)
@@ -99,3 +69,33 @@ getShipCoords startCoord shipSize otherShips = do
 
                                                 if((length possibleShipsAux)==0) then []
                                                 else possibleShipsAux !! 0 -- choose one of the available positions
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- AUXILIARY, GENERAL PURPOSE, FUNCTIONS (IMPURE)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- checks if the game has ended (i.e. when all the ships of one player have sunken)
+hasGameEnded :: GameState -> Int
+hasGameEnded state = do let playerWon = if((count Sunken (map (board (computerDefenseBoard state)) (concat (ships (computerDefenseBoard state)))))==(sum shipSizes)) then True else False
+                        let computerWon = if((count Sunken (map (board (playerDefenseBoard state)) (concat (ships (playerDefenseBoard state)))))==(sum shipSizes)) then True else False
+                        
+                        -- retrieve the final decision
+                        if(playerWon && computerWon) then 3 -- there has been a tie
+                        else if(computerWon) then 2 -- only the computer has won
+                             else if(playerWon) then 1 -- only the player has won
+                                  else 0 -- the game must go on
+
+-- retrieves the Coord value encapsulated by the Maybe type
+fromJust :: Maybe Coord -> Coord
+fromJust (Just a) = a
+fromJust Nothing = (-1,-1)
+
+-- retrieves the Int value encapsulated by the Maybe type
+fromJustInt :: Maybe Int -> Int
+fromJustInt (Just a) = a
+fromJustInt Nothing = -1
+
+-- split the input string ("string") on the given character "char"
+splitOn :: Char -> String -> [String]
+splitOn char string = do let index = elemIndex ';' string
+                         if(index==Nothing) then []
+                         else (tupleToList (splitAt (fromJustInt index) string))
