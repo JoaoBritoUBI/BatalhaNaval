@@ -78,7 +78,7 @@ The player will be able to see both boards (**defense** and **offense**) like in
 	9  |   |   |   |   |   |   |   |   |   |   |
 	   +---+---+---+---+---+---+---+---+---+---+
 
-	  	      Player's Defense Board
+	  	  Player's Defense Board
 
 	     0   1   2   3   4   5   6   7   8   9
 	   +---+---+---+---+---+---+---+---+---+---+
