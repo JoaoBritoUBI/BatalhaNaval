@@ -1,4 +1,4 @@
--- contains PURE and IMPURE content
+-- get ready for some PURE and IMPURE content
 module AuxFunctions where
 
 import Board

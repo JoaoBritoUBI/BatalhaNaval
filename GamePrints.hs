@@ -1,13 +1,13 @@
--- contains PURE and IMPURE content
+-- get ready for some PURE and IMPURE content
 module GamePrints where
 
 import Board
 import Constants
 import GameState
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------
 -- AUXILIARY FUNCTION RELATED TO THE GAME'S INTERFACE (PURE)
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------
 -- returns the number os spaces that a string needs
 numSpaces :: Coord -> Int -> Int
 numSpaces coord baseLength = (58 - baseLength - (length (show coord)) - 1)

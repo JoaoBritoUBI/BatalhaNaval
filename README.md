@@ -8,9 +8,9 @@ This project allows the user to **play a game of *Battleship* against the comput
 # Setup
 **1.** Download and install **GHC/GHCI** from the official downloads page (https://www.haskell.org/downloads/);
 
-**2.** Type ***ghci*** on a terminal window, followed by ***:l Main.hs***;
+**2.** Type "*ghci*" on a terminal window, followed by "*:l Main.hs*";
 
-**3.** Type ***main*** to launch the game;
+**3.** Type "*main*" to launch the game;
 
 **4.** Follow the game's instructions and have fun!
 
@@ -53,7 +53,7 @@ The player will be able to see both boards (**defense** and **offense**) like in
     |                          PLAY                          |
     o--------------------------------------------------------o
 
-		    Player's Offense Board
+		    	Player's Offense Board
 
          0   1   2   3   4   5   6   7   8   9
 	   +---+---+---+---+---+---+---+---+---+---+
@@ -78,7 +78,7 @@ The player will be able to see both boards (**defense** and **offense**) like in
 	9  |   |   |   |   |   |   |   |   |   |   |
 	   +---+---+---+---+---+---+---+---+---+---+
 
-		    Player's Defense Board
+		    	Player's Defense Board
 
 	     0   1   2   3   4   5   6   7   8   9
 	   +---+---+---+---+---+---+---+---+---+---+
@@ -105,7 +105,7 @@ The player will be able to see both boards (**defense** and **offense**) like in
 
 	(Player) Attack position >
 
-From this point forward, both players will enter coordinates in the familiar format (i.e. (xValue,yValue)) and wait for the program to state the outcomes, like so:
+From this point forward, both players will enter coordinates in the familiar format (i.e. (line,column)) and wait for the program to state the outcomes, like so:
 
     o--------------------------------------------------------o
     |                       ROUND INFO                       |

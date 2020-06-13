@@ -1,4 +1,4 @@
--- contains PURE content
+-- get ready for some PURE content
 module Constants where
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -6,7 +6,7 @@ module Constants where
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- the level of difficulty from the computer
 wiseComputer :: Bool
-wiseComputer = False
+wiseComputer = True
 
 -- the length of each side of the board
 boardSize :: Int
@@ -23,6 +23,10 @@ shipNames = ["Porta-Aviões","Navio-Tanque","Navio-Tanque","Contratorpedeiro","C
 -- the amount of ships that can be placed on the board
 numShips :: Int
 numShips = length shipNames
+
+-- the radius for the computer to search in, centered around any position where a player's ship was found
+searchRadius :: Int
+searchRadius = 1
 
 -- just for testing purposes
 testInputs :: [String]

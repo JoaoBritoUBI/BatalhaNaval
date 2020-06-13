@@ -1,4 +1,4 @@
--- contains PURE content
+-- get ready for some PURE content
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 
 module Board where
@@ -52,7 +52,8 @@ showState Sunken   = " * |"
 
 -- displays one line of the board
 showRow :: PrettyBoard -> String
-showRow l = if((fst l)<10) then ((show (fst l)) ++ "  " ++ '|' : concatMap showState (snd l) ++ "\n") else ((show (fst l)) ++ " " ++ '|' : concatMap showState (snd l) ++ "\n")
+showRow l = if((fst l)<10) then ((show (fst l)) ++ "  " ++ '|' : concatMap showState (snd l) ++ "\n") 
+            else ((show (fst l)) ++ " " ++ '|' : concatMap showState (snd l) ++ "\n")
 
 -- displays the top and bottom of one line of the board
 showLine :: Int -> String
