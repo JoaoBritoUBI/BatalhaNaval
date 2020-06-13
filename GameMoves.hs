@@ -120,9 +120,11 @@ initializePlayerShips currentShip finalList = do
                                                     -- END TEST VERSION
                                                     
                                                     -- BEGIN FINAL VERSION
+                                                    
                                                     putStr ("\n" ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
                                                     -- read and check the input
                                                     n <-  getLine
+
                                                     -- BEGIN FINAL VERSION
 
                                                     if(n=="q") then return [[(-1,-1)]] -- leave the game

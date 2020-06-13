@@ -9,8 +9,12 @@ import GameState
 -- AUXILIARY FUNCTION RELATED TO THE GAME'S INTERFACE (PURE)
 --------------------------------------------------------------------------
 -- returns the number os spaces that a string needs
-numSpaces :: Coord -> Int -> Int
-numSpaces coord baseLength = (58 - baseLength - (length (show coord)) - 1)
+roundInfoNumSpaces :: Coord -> Int -> Int
+roundInfoNumSpaces coord baseLength = (58 - baseLength - (length (show coord)) - 1)
+
+-- returns the number os spaces that a string needs
+gameOverNumSpaces :: Int -> Int
+gameOverNumSpaces baseLength = (58 - baseLength - 3)
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS RELATED TO THE GAME'S INTERFACE (IMPURE)
@@ -70,11 +74,25 @@ showRoundInfo = do putStrLn "\no------------------------------------------------
                    putStrLn "|                       ROUND INFO                       |"
                    putStrLn "o--------------------------------------------------------o"
 
+-- shows some information regarding the player's move
+showPlayerRoundInfo :: Coord -> PositionState -> IO ()
+showPlayerRoundInfo coord positionState = do if(positionState==Sunken) then putStrLn ("| (Player) Coordinate " ++ (show coord) ++ " lead to a SUNKEN SHIP!" ++ (replicate (roundInfoNumSpaces coord 45) ' ') ++ "|") 
+                                             else if(positionState==Hit) then putStrLn ("| (Player) Coordinate " ++ (show coord) ++ " was a HIT!" ++ (replicate (roundInfoNumSpaces coord 33) ' ') ++ "|") 
+                                                  else putStrLn ("| (Player) Coordinate " ++ (show coord) ++ " was a MISS!" ++ (replicate (roundInfoNumSpaces coord 34) ' ') ++ "|") 
+
+-- shows some information regarding the computer's move
+showComputerRoundInfo :: Coord -> PositionState -> IO ()
+showComputerRoundInfo coord positionState = do if(positionState==Sunken) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " lead to a SUNKEN SHIP!" ++ (replicate (roundInfoNumSpaces coord 47) ' ') ++ "|") 
+                                               else if(positionState==Hit) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " was a HIT!" ++ (replicate (roundInfoNumSpaces coord 35) ' ') ++ "|") 
+                                                    else putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " was a MISS!" ++ (replicate (roundInfoNumSpaces coord 36) ' ') ++ "|") 
+
 -- shows the "GameOver" interface
-showGameOver :: IO ()
-showGameOver = do putStrLn "o--------------------------------------------------------o"
-                  putStrLn "|                       GAME OVER                        |"
-                  putStrLn "o--------------------------------------------------------o"
+showGameOver :: String -> IO ()
+showGameOver string = do putStrLn "o--------------------------------------------------------o"
+                         putStrLn "|                       GAME OVER                        |"
+                         putStrLn "o--------------------------------------------------------o"
+                         putStrLn ("| " ++ string ++ (replicate (gameOverNumSpaces (length string)) ' ') ++ "|")
+                         putStrLn "o--------------------------------------------------------o"
 
 -- shows a single interface line
 showSingleLine :: IO ()
@@ -86,15 +104,3 @@ showPlayerBoards state = do putStrLn ("   " ++ (replicate (((5+(4*(boardSize-1))
                             print (board (playerOffenseBoard state))
                             putStrLn ("   " ++ (replicate (((5+(4*(boardSize-1))) - 22)`div`2) ' ') ++ "Player's Defense Board")
                             print (board (playerDefenseBoard state))
-
--- shows some information regarding the player's move
-showPlayerRoundInfo :: Coord -> PositionState -> IO ()
-showPlayerRoundInfo coord positionState = do if(positionState==Sunken) then putStrLn ("| (Player) Coordinate " ++ (show coord) ++ " lead to a SUNKEN SHIP!" ++ (replicate (numSpaces coord 45) ' ') ++ "|") 
-                                             else if(positionState==Hit) then putStrLn ("| (Player) Coordinate " ++ (show coord) ++ " was a HIT!" ++ (replicate (numSpaces coord 33) ' ') ++ "|") 
-                                                  else putStrLn ("| (Player) Coordinate " ++ (show coord) ++ " was a MISS!" ++ (replicate (numSpaces coord 34) ' ') ++ "|") 
-
--- shows some information regarding the computer's move
-showComputerRoundInfo :: Coord -> PositionState -> IO ()
-showComputerRoundInfo coord positionState = do if(positionState==Sunken) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " lead to a SUNKEN SHIP!" ++ (replicate (numSpaces coord 47) ' ') ++ "|") 
-                                               else if(positionState==Hit) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " was a HIT!" ++ (replicate (numSpaces coord 35) ' ') ++ "|") 
-                                                    else putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " was a MISS!" ++ (replicate (numSpaces coord 36) ' ') ++ "|") 

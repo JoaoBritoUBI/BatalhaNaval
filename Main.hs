@@ -27,7 +27,14 @@ play init enter = do state <- get
                             -- show the "Ships Placement" interface
                             liftIO$showShipsPlacement
 
-                            playerShips <- liftIO$(initializeComputerShips 0 [])
+                            -- BEGIN FINAL VERSION
+                            playerShips <- liftIO$(initializePlayerShips 0 [])
+                            -- END FINAL VERSION
+
+                            -- BEGIN TEST VERSION
+                            --playerShips <- liftIO$(initializeComputerShips 0 [])
+                            -- END TEST VERSION
+
                             if(playerShips==[[(-1,-1)]]) then liftIO$(putStrLn "\nLeaving the game...\n") -- the player wants to leave the game (pressed "q")
                             else do
                                 liftIO$(putStrLn "\n(Player) Done placing the ships!")
@@ -53,21 +60,22 @@ play init enter = do state <- get
                         liftIO$(showPlayerBoards state)
 
                         -- see if the computer has completely exploited the search area
-                        let exploitArea = computerExploitArea state
-                        let exhaustedSearch = exhaustedSearchArea (computerMoves state) exploitArea
+                        let computerExploitAreaAux = computerExploitArea state
+                        let exhaustedSearch = exhaustedSearchArea (computerMoves state) computerExploitAreaAux
 
                         if(exhaustedSearch) then put state {computerExploitArea = []}
-                        else put state {computerExploitArea = exploitArea}
+                        else put state {computerExploitArea = computerExploitAreaAux}
 
                         -- BEGIN TEST VERSION
-                        --state <- get
-
+                        {--
+                        state <- get
                         -- see if the player has completely exploited the search area
-                        --let exploitArea = (playerExploitArea state)
-                        --let exhaustedSearch = exhaustedSearchArea (playerMoves state) exploitArea
+                        let playerExploitAreaAux = playerExploitArea state
+                        let exhaustedSearch = exhaustedSearchArea (playerMoves state) playerExploitAreaAux
 
-                        --if(exhaustedSearch) then put state {playerExploitArea = []}
-                        --else put state {playerExploitArea = exploitArea}
+                        if(exhaustedSearch) then put state {playerExploitArea = []}
+                        else put state {playerExploitArea = playerExploitAreaAux}
+                        --}
                         -- END TEST VERSION
                         
                         ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,12 +87,14 @@ play init enter = do state <- get
                         liftIO$putStr "(Player) Attack position > "
                         
                         -- BEGIN TEST VERSION
-                        --let checkerboardBlack = filter (\x -> not (elem x (playerMoves state))) (masterCheckerboardBlack 0 [])
-                        --let checkerboardWhite = filter (\x -> not (elem x (playerMoves state))) (masterCheckerboardWhite 0 [])
-                        --let checkerboard = if(checkerboardBlack/=[]) then checkerboardBlack else checkerboardWhite
+                        {--
+                        let checkerboardBlack = filter (\x -> not (elem x (playerMoves state))) (masterCheckerboardBlack 0 [])
+                        let checkerboardWhite = filter (\x -> not (elem x (playerMoves state))) (masterCheckerboardWhite 0 [])
+                        let checkerboard = if(checkerboardBlack/=[]) then checkerboardBlack else checkerboardWhite
 
-                        --playerMove <- liftIO$getComputerMove (playerMoves state) checkerboard (getCurrentSubArea (playerExploitArea state) (playerMoves state))
-                        --liftIO$putStrLn ((show playerMove) ++ "\n")
+                        playerMove <- liftIO$getComputerMove (playerMoves state) checkerboard (getCurrentSubArea (playerExploitArea state) (playerMoves state))
+                        liftIO$putStrLn ((show playerMove) ++ "\n")
+                        --}
                         -- END TEST VERSION
                         
                         -- BEGIN FINAL VERSION
@@ -144,12 +154,14 @@ play init enter = do state <- get
                                             computerDefenseBoard = (computerDefenseBoard state) {board = (\x -> if(x==playerMove) then Hit else ((board (computerDefenseBoard state)) x))}
                                             }
 
-                                        -- BEGIN TEST VERSION
+                                        -- BEGIN TEST VERSION 
+                                        {--
                                         -- check if we need a new exploit area or continue with the last one
-                                        --state <- get
-                                        --let exploitArea = (playerExploitArea state)
-                                        --if(exploitArea==[]) then put state {playerExploitArea = (getSearchArea playerMove (playerMoves state) [] 1)}
-                                        --else put state {playerExploitArea = exploitArea}
+                                        state <- get
+                                        let exploitArea = (playerExploitArea state)
+                                        if(exploitArea==[]) then put state {playerExploitArea = (getSearchArea playerMove (playerMoves state) [] 1)}
+                                        else put state {playerExploitArea = exploitArea}
+                                        --}
                                         -- END TEST VERSION
 
                             else -- case where the player didn't hit anything
@@ -215,20 +227,17 @@ play init enter = do state <- get
                             liftIO$showSingleLine
 
                             -----------------------------------------------------------------------------------------
-                            -- detect when the game ends
+                            -- detect when the game ends and show the "Game Over" interface 
                             -----------------------------------------------------------------------------------------
                             state <- get
                             let endGame = hasGameEnded state
                             if(endGame==0) then play False enter
                             else do
-                                -- show the "Game Over" interface
-                                liftIO$showGameOver
-
-                                if(endGame==1) then do liftIO$putStrLn "\nThe player has won the game!\n"
+                                if(endGame==1) then liftIO$showGameOver "The player has won the game!"
 
                                 else 
-                                    if(endGame==2) then liftIO$putStrLn "\nThe computer has won the game!\n"
-                                    else liftIO$putStrLn "\nIt's a tie! Both the player and the computer have won!\n"
+                                    if(endGame==2) then liftIO$showGameOver "The computer has won the game!"
+                                    else liftIO$showGameOver "It's a tie! Both the player and the computer have won!"
 
 --------------------------------------------------
 -- MAIN CONTROLS
