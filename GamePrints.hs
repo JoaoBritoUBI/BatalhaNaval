@@ -5,9 +5,9 @@ import Board
 import Constants
 import GameState
 
---------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 -- AUXILIARY FUNCTION RELATED TO THE GAME'S INTERFACE (PURE)
---------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 -- returns the number os spaces that a string needs
 roundInfoNumSpaces :: Coord -> Int -> Int
 roundInfoNumSpaces coord baseLength = (58 - baseLength - (length (show coord)) - 1)
@@ -16,9 +16,9 @@ roundInfoNumSpaces coord baseLength = (58 - baseLength - (length (show coord)) -
 gameOverNumSpaces :: Int -> Int
 gameOverNumSpaces baseLength = (58 - baseLength - 3)
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS RELATED TO THE GAME'S INTERFACE (IMPURE)
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- shows the game's instructions
 showInstructions :: IO Coord
 showInstructions = do putStrLn "\no---------------------------------------------------------------------------------------------------------------------------o"
@@ -82,7 +82,7 @@ showPlayerRoundInfo coord positionState = do if(positionState==Sunken) then putS
 
 -- shows some information regarding the computer's move
 showComputerRoundInfo :: Coord -> PositionState -> IO ()
-showComputerRoundInfo coord positionState = do if(positionState==Sunken) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " lead to a SUNKEN SHIP!" ++ (replicate (roundInfoNumSpaces coord 47) ' ') ++ "|") 
+showComputerRoundInfo coord positionState = do if(positionState==Sunken) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " lead to a SUNKEN SHIP!" ++ (replicate (roundInfoNumSpaces coord 47) ' ') ++ "|")
                                                else if(positionState==Hit) then putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " was a HIT!" ++ (replicate (roundInfoNumSpaces coord 35) ' ') ++ "|") 
                                                     else putStrLn ("| (Computer) Coordinate " ++ (show coord) ++ " was a MISS!" ++ (replicate (roundInfoNumSpaces coord 36) ' ') ++ "|") 
 
