@@ -59,7 +59,7 @@ doesntOverlap shipCoords (x:xs) = if((length (filter (\e -> elem e shipCoords) x
 getShipCoords :: Coord -> Int -> [[Coord]] -> [Coord]
 getShipCoords startCoord shipSize otherShips = do 
                                                 -- filter out impossible positions (i.e. outside the boards' limits) from the starting one
-                                                let possibleEndCoords = filter (\(a,b) -> a>=0 && a<boardSize && b>=0 && b<boardSize) [((fst startCoord)+(fst c),(snd startCoord)+(snd c)) | c <- [(-(shipSize-1),0),(0,(shipSize-1)),((shipSize-1),0),(0,-(shipSize-1))]]
+                                                let possibleEndCoords = filter (\(a,b) -> a>=0 && a<boardSize && b>=0 && b<boardSize) [((fst startCoord)+(fst c),(snd startCoord)+(snd c)) | c <- [(0,-(shipSize-1)),(-(shipSize-1),0),(0,(shipSize-1)),((shipSize-1),0)]]
                                                 
                                                 -- get the intermediate coordenates for every possible end coordinate
                                                 let possibleShips = [(getIntermediateCoords startCoord e) | e <- possibleEndCoords]
@@ -70,23 +70,19 @@ getShipCoords startCoord shipSize otherShips = do
                                                 if((length possibleShipsAux)==0) then []
                                                 else possibleShipsAux !! 0 -- choose one of the available positions
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY, GENERAL PURPOSE, FUNCTIONS (IMPURE)
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- checks if the game's settings are OK
 gameSettingsOK :: IO Bool
-gameSettingsOK = if(searchRadius<0) then do 
-                    putStrLn ("\nFATAL ERROR: The computer search radius (" ++ (show searchRadius) ++ ") can not be negative! Leaving the game...\n")
+gameSettingsOK = if((length shipSizes)/=(length shipNames)) then do 
+                    putStrLn ("\nFATAL ERROR: The ships' names and respective sizes do not match! Leaving the game...\n")
                     return False
                  else do
-                      if((length shipSizes)/=(length shipNames)) then do 
-                           putStrLn ("\nFATAL ERROR: The ships' names and respective sizes do not match! Leaving the game...\n")
-                           return False
-                      else do
-                         if((boardSize^2)<=(sum shipSizes)) then do 
-                              putStrLn ("\nFATAL ERROR: The board has " ++ (show (boardSize^2)) ++ " available cells, but the ships would need " ++ (show (sum shipSizes)) ++ "! Leaving the game...\n")
-                              return False
-                         else return True -- the settings are OK
+                    if((boardSize^2)<=(sum shipSizes)) then do 
+                         putStrLn ("\nFATAL ERROR: The board has " ++ (show (boardSize^2)) ++ " available cells, but the ships would need " ++ (show (sum shipSizes)) ++ "! Leaving the game...\n")
+                         return False
+                    else return True -- the settings are OK
 
 -- checks if the game has ended (i.e. when all the ships of one player have sunken)
 hasGameEnded :: GameState -> Int

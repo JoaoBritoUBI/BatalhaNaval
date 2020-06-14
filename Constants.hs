@@ -12,10 +12,6 @@ wiseComputer = True
 boardSize :: Int
 boardSize = 10
 
--- the radius for the computer to search in, centered around any position where a player's ship was found
-searchRadius :: Int
-searchRadius = 1
-
 -- the length of every ship available
 shipSizes :: [Int]
 shipSizes = [5,4,4,3,3,3,2,2,2,2]

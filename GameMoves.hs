@@ -7,9 +7,9 @@ import System.Random
 import Constants
 import Text.Read hiding (get)
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS RELATED TO THE COMPUTER'S MOVES (PURE)
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- returns every even line in a typical checkerboard
 evenCheckerboard :: Int -> [(Int,Int)]
 evenCheckerboard y = [(y,x) | x <- [1..(boardSize-1)], odd x]
@@ -28,31 +28,19 @@ masterCheckerboardWhite :: Int -> [(Int,Int)] -> [(Int,Int)]
 masterCheckerboardWhite y finalList = if(y==boardSize) then finalList
                                  else if(even y) then (masterCheckerboardWhite (y+1) (finalList ++ (oddCheckerboard y))) else (masterCheckerboardWhite (y+1) (finalList ++ (evenCheckerboard y)))
 
--- returns a search area for the computer to exploit
-getSearchArea :: Coord -> [Coord] -> [Coord] -> Int -> [[Coord]]
-getSearchArea coord alreadyVisited all currentDistance = if(currentDistance>searchRadius) then [] -- stop criterium
-                                                         else do
-                                                            if(all==[]) then do 
-                                                                    let aux = filter (\x -> (abs ((fst x)-(fst coord)))<=searchRadius && (abs ((snd x)-(snd coord)))<=searchRadius && not (elem x alreadyVisited)) [ (y,x) | y <- [0..(boardSize-1)], x <- [0..(boardSize-1)]]
-                                                                    getSearchArea coord alreadyVisited aux currentDistance
-                                                            else do
-                                                                let subGroup = filter (\x ->(abs ((fst x)-(fst coord)))<=currentDistance && (abs ((snd x)-(snd coord)))<=currentDistance) all
-                                                                ([subGroup] ++ (getSearchArea coord alreadyVisited all (currentDistance+1)))
+-- retrieves the closest coordinates to "coord", as long as they have not been visited already
+getUnvisitedNeighbours :: Coord -> [Coord] -> [Coord] -> [Coord]
+getUnvisitedNeighbours coord alreadyVisited nextMoves = filter (\(a,b) -> a>=0 && a<boardSize && b>=0 && b<boardSize && (not (elem (a,b) alreadyVisited)) && (not (elem (a,b) nextMoves))) [(fst coord + fst n, snd coord + snd n) | n <- [(0,-1),(-1,0),(0,1),(1,0)]]
 
--- checks if the search area has been fully explored or not
-exhaustedSearchArea :: [Coord] -> [[Coord]] -> Bool
-exhaustedSearchArea alreadyVisited searchArea = (filter (\x -> not (elem x alreadyVisited)) (concat searchArea))==[]
+-- removes the coordinate "coord" the from list "(y:ys)"
+removeCoordFromQueue :: Coord -> [Coord] -> [Coord]
+removeCoordFromQueue _ []                     = []
+removeCoordFromQueue coord (y:ys) | coord == y    = removeCoordFromQueue coord ys
+                                  | otherwise = y : removeCoordFromQueue coord ys
 
--- returns the sub-area that is being exploited
-getCurrentSubArea :: [[Coord]] -> [Coord] -> [Coord]
-getCurrentSubArea [] _ = []
-getCurrentSubArea (x:xs) alreadyVisited = do let coordsLeft = (filter (\a -> not (elem a alreadyVisited)) x)
-                                             if(coordsLeft/=[]) then coordsLeft
-                                             else getCurrentSubArea xs alreadyVisited
-
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS RELATED TO THE COMPUTER AND PLAYER'S MOVES (IMPURE)
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- generates pseudo-random coordinates
 getRandomCoordinates :: IO Coord
 getRandomCoordinates = do
@@ -96,16 +84,15 @@ getPlayerMove alreadyChosen = do n <- getLine
 
 -- chooses a coordinate for the computer's attack
 getComputerMove :: [Coord] -> [Coord] -> [Coord] -> IO Coord
-getComputerMove alreadyChosen checkerboard computerExploitSubArea = do if(not wiseComputer) then do -- pseudo-randomly choose a coordinate for the computer's attack
+getComputerMove alreadyChosen checkerboard computernextMoves = do if(not wiseComputer) then do -- pseudo-randomly choose a coordinate for the computer's attack
                                                                         move <- getRandomCoordinates
                                                                         if(elem move alreadyChosen) then (getComputerMove alreadyChosen checkerboard [])
                                                                         else return move
                                                             
-                                                                       else -- wisely choose a coordinate for the computer's attack
-                                                                        do if(computerExploitSubArea/=[]) then do -- the computer has found a ship, let's explore the surrounding area and try to sink it
-                                                                            index <- (getRandomIndex (length computerExploitSubArea))
-                                                                            if(elem (computerExploitSubArea !! index) alreadyChosen) then (getComputerMove alreadyChosen checkerboard computerExploitSubArea)
-                                                                            else return (computerExploitSubArea !! index)
+                                                                      else -- wisely choose a coordinate for the computer's attack
+                                                                        do if(computernextMoves/=[]) then do -- the computer has found a ship, let's explore the surrounding area and try to sink it
+                                                                            index <- (getRandomIndex (length computernextMoves))
+                                                                            return (computernextMoves !! index)
                                                                             
                                                                             else do -- the computer has not found any ship, it will guess at random (using the checkerboard method)
                                                                                 index <- (getRandomIndex (length checkerboard))
@@ -115,14 +102,17 @@ getComputerMove alreadyChosen checkerboard computerExploitSubArea = do if(not wi
 initializePlayerShips :: Int -> [[Coord]] -> IO [[Coord]]
 initializePlayerShips currentShip finalList = do 
                                                 if(currentShip/=(length shipNames)) then do
-                                                    putStr ("\n" ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
+                                                    putStr ("\n(Player) " ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
                                                     
                                                     -- BEGIN TEST VERSION
-                                                    --let n = testInputs !! currentShip
+                                                    --{--
+                                                    let n = testInputs !! currentShip
+                                                    putStr n
+                                                    --}
                                                     -- END TEST VERSION
                                                     
                                                     -- BEGIN FINAL VERSION
-                                                    n <-  getLine
+                                                    --n <-  getLine
                                                     -- BEGIN FINAL VERSION
 
                                                     if(n=="q") then return [[(-1,-1)]] -- leave the game

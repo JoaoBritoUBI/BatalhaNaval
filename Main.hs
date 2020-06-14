@@ -12,9 +12,9 @@ import AuxFunctions
 import GamePrints
 import GameMoves
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- MAIN FUNCTION
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 play :: Bool -> StateT GameState IO()
 play init = do state <- get
                if(init) then do -- initialize the boards
@@ -55,47 +55,30 @@ play init = do state <- get
 
                 -- print both of the player's boards
                 liftIO$(showPlayerBoards state)
-
-                -- see if the computer has completely exploited the search area
-                let computerExploitAreaAux = computerExploitArea state
-                let exhaustedSearch = exhaustedSearchArea (computerMoves state) computerExploitAreaAux
-
-                if(exhaustedSearch) then put state {computerExploitArea = []}
-                else put state {computerExploitArea = computerExploitAreaAux}
-
-                -- BEGIN TEST VERSION
-                {--
-                state <- get
-                -- see if the player has completely exploited the search area
-                let playerExploitAreaAux = playerExploitArea state
-                let exhaustedSearch = exhaustedSearchArea (playerMoves state) playerExploitAreaAux
-
-                if(exhaustedSearch) then put state {playerExploitArea = []}
-                else put state {playerExploitArea = playerExploitAreaAux}
-                --}
-                -- END TEST VERSION
                 
                 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 -- register the player and computer's moves
                 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 state <- get
-
-                -- get the player's move
-                liftIO$putStr "(Player) Attack position > "
                 
                 -- BEGIN TEST VERSION
                 {--
+                -- get the computer's move
                 let checkerboardBlack = filter (\x -> not (elem x (playerMoves state))) (masterCheckerboardBlack 0 [])
                 let checkerboardWhite = filter (\x -> not (elem x (playerMoves state))) (masterCheckerboardWhite 0 [])
                 let checkerboard = if(checkerboardBlack/=[]) then checkerboardBlack else checkerboardWhite
 
-                playerMove <- liftIO$getComputerMove (playerMoves state) checkerboard (getCurrentSubArea (playerExploitArea state) (playerMoves state))
-                liftIO$putStrLn ((show playerMove) ++ "\n")
+                playerMove <- liftIO$(getplayerMove (playerMoves state) checkerboard (playerNextMoves state))
+                liftIO$(putStrLn ("\n(player) Attack position > " ++ (show playerMove)))
                 --}
                 -- END TEST VERSION
                 
                 -- BEGIN FINAL VERSION
+                --{--
+                -- get the player's move
+                liftIO$putStr "(Player) Attack position > "
                 playerMove <- liftIO$(getPlayerMove (playerMoves state))
+                --}
                 -- END FINAL VERSION
                 
                 if(playerMove==(-1,-1)) then liftIO$(putStrLn "\nLeaving the game...\n") -- the player wants to leave the game (pressed "q")
@@ -105,7 +88,7 @@ play init = do state <- get
                     let checkerboardWhite = filter (\x -> not (elem x (computerMoves state))) (masterCheckerboardWhite 0 [])
                     let checkerboard = if(checkerboardBlack/=[]) then checkerboardBlack else checkerboardWhite
 
-                    computerMove <- liftIO$(getComputerMove (computerMoves state) checkerboard (getCurrentSubArea (computerExploitArea state) (computerMoves state)))
+                    computerMove <- liftIO$(getComputerMove (computerMoves state) checkerboard (computerNextMoves state))
                     liftIO$(putStrLn ("\n(Computer) Attack position > " ++ (show computerMove)))
 
                     -- save the new information
@@ -114,7 +97,15 @@ play init = do state <- get
                         playerMoves = (playerMoves state) ++ [playerMove],
 
                         -- update the computer's part
-                        computerMoves = (computerMoves state) ++ [computerMove]
+                        computerMoves = (computerMoves state) ++ [computerMove],
+
+                        -- update the computer's priority queue
+                        computerNextMoves = (removeCoordFromQueue computerMove (computerNextMoves state))
+
+                        -- BEGIN TEST VERSION 
+                        -- update the player's priority queue
+                        --playerNextMoves = (drop 1 (playerNextMoves state))
+                        -- END TEST VERSION 
                     }
                     
                     -- show the "Round Info" interface
@@ -149,17 +140,12 @@ play init = do state <- get
                                     
                                     -- update the computer's defense board
                                     computerDefenseBoard = (computerDefenseBoard state) {board = (\x -> if(x==playerMove) then Hit else ((board (computerDefenseBoard state)) x))}
-                                    }
 
-                                -- BEGIN TEST VERSION 
-                                {--
-                                -- check if we need a new exploit area or continue with the last one
-                                state <- get
-                                let exploitArea = (playerExploitArea state)
-                                if(exploitArea==[]) then put state {playerExploitArea = (getSearchArea playerMove (playerMoves state) [] 1)}
-                                else put state {playerExploitArea = exploitArea}
-                                --}
-                                -- END TEST VERSION
+                                    -- update the player's priority queue
+                                    -- BEGIN TEST VERSION
+                                    --playerNextMoves = ((playerNextMoves state) ++ (getUnvisitedNeighbours playerMove (playerMoves state) (playerNextMoves state)))
+                                    -- END TEST VERSION
+                                }
 
                     else -- case where the player didn't hit anything
                         do
@@ -170,7 +156,7 @@ play init = do state <- get
                                 
                                 -- update the computer's defense board
                                 computerDefenseBoard = (computerDefenseBoard state) {board = (\x -> if(x==playerMove) then Miss else ((board (computerDefenseBoard state)) x))}
-                                }
+                            }
 
                     -----------------------------------------------------------------------------------------------------------------------------------------------------------------
                     -- deal with the computer's move
@@ -201,14 +187,11 @@ play init = do state <- get
                                     computerOffenseBoard = (computerOffenseBoard state) {board = (\x -> if(x==computerMove) then Hit else ((board (computerOffenseBoard state)) x))},
                                     
                                     -- update the player's defense board
-                                    playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(x==computerMove) then Hit else ((board (playerDefenseBoard state)) x))}
-                                    }
-                                
-                                -- check if we need a new exploit area or continue with the last one
-                                state <- get
-                                let exploitArea = computerExploitArea state
-                                if(exploitArea==[]) then put state {computerExploitArea = (getSearchArea computerMove (computerMoves state) [] 1)}
-                                else put state {computerExploitArea = exploitArea}
+                                    playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(x==computerMove) then Hit else ((board (playerDefenseBoard state)) x))},
+
+                                    -- update the computer's priority queue
+                                    computerNextMoves = ((computerNextMoves state) ++ (getUnvisitedNeighbours computerMove (computerMoves state) (computerNextMoves state)))
+                                }
 
                     else -- case where the computer didn't hit anything
                         do
@@ -219,9 +202,11 @@ play init = do state <- get
                                 
                                 -- update the computer's defense board
                                 playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(x==computerMove) then Miss else ((board (playerDefenseBoard state)) x))}
-                                }
+                            }
 
                     liftIO$showSingleLine
+                    state <- get
+                    liftIO$print (computerNextMoves state)
 
                     -----------------------------------------------------------------------------------------
                     -- detect when the game ends and show the "Game Over" interface 
@@ -249,5 +234,5 @@ main = do settingsOK <- liftIO$gameSettingsOK
                 runStateT (play True) initialState
             
             else return ((),initialState)
-            
+
           else return ((),initialState)
