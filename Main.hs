@@ -99,11 +99,11 @@ play init = do state <- get
                         -- update the computer's part
                         computerMoves = (computerMoves state) ++ [computerMove],
 
-                        -- update the computer's priority queue
+                        -- update the computer's next moves
                         computerNextMoves = (removeCoordFromQueue computerMove (computerNextMoves state))
 
                         -- BEGIN TEST VERSION 
-                        -- update the player's priority queue
+                        -- update the player's next moves
                         --playerNextMoves = (drop 1 (playerNextMoves state))
                         -- END TEST VERSION 
                     }
@@ -141,7 +141,7 @@ play init = do state <- get
                                     -- update the computer's defense board
                                     computerDefenseBoard = (computerDefenseBoard state) {board = (\x -> if(x==playerMove) then Hit else ((board (computerDefenseBoard state)) x))}
 
-                                    -- update the player's priority queue
+                                    -- update the player's next moves
                                     -- BEGIN TEST VERSION
                                     --playerNextMoves = ((playerNextMoves state) ++ (getUnvisitedNeighbours playerMove (playerMoves state) (playerNextMoves state)))
                                     -- END TEST VERSION
@@ -189,7 +189,7 @@ play init = do state <- get
                                     -- update the player's defense board
                                     playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(x==computerMove) then Hit else ((board (playerDefenseBoard state)) x))},
 
-                                    -- update the computer's priority queue
+                                    -- update the computer's next moves
                                     computerNextMoves = ((computerNextMoves state) ++ (getUnvisitedNeighbours computerMove (computerMoves state) (computerNextMoves state)))
                                 }
 

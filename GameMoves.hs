@@ -105,14 +105,14 @@ initializePlayerShips currentShip finalList = do
                                                     putStr ("\n(Player) " ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
                                                     
                                                     -- BEGIN TEST VERSION
-                                                    --{--
+                                                    {--
                                                     let n = testInputs !! currentShip
                                                     putStr n
                                                     --}
                                                     -- END TEST VERSION
                                                     
                                                     -- BEGIN FINAL VERSION
-                                                    --n <-  getLine
+                                                    n <-  getLine
                                                     -- BEGIN FINAL VERSION
 
                                                     if(n=="q") then return [[(-1,-1)]] -- leave the game
