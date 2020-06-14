@@ -130,7 +130,7 @@ o--------------------------------------------------------o
 ```
 
 ## The Verdict
-In general, the code makes use of both generic and Haskell specific functionalities, like:
+In general, the code makes use of both generic and Haskell specific functionalities, among which:
 
 * List Comprehension;
 * Curried Functions;
@@ -142,3 +142,12 @@ In general, the code makes use of both generic and Haskell specific functionalit
 * Recursion.
 
 Additionally, we made sure that we **gave each function a purpose** and **divided the tasks into functions**, rather than having one really big function to do it all. This approach gave the code more readability and a "functional" look and feel.
+
+## Side Note
+If needed, the code can be modified to put 2 computers against each other. To do so, one can **uncomment** every line that is within a ***BEGIN TEST VERSION*** ... ***END TEST VERSION*** block and, conversely, **comment** every line within a ***BEGIN FINAL VERSION*** ... ***END FINAL VERSION*** block.
+
+These blocks can be found in:
+
+* **Main.hs**;
+* **GameMoves.hs**;
+* **GameState.hs**.
