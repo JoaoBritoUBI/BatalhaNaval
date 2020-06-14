@@ -1,9 +1,9 @@
 -- get ready for some PURE content
 module Constants where
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 -- GAME'S SETTINGS AND CONSTANTS
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 -- the level of difficulty from the computer
 wiseComputer :: Bool
 wiseComputer = True
@@ -12,17 +12,17 @@ wiseComputer = True
 boardSize :: Int
 boardSize = 10
 
+-- the radius for the computer to search in, centered around any position where a player's ship was found
+searchRadius :: Int
+searchRadius = 1
+
 -- the length of every ship available
 shipSizes :: [Int]
 shipSizes = [5,4,4,3,3,3,2,2,2,2]
 
 -- the names of every ship available
 shipNames :: [[Char]]
-shipNames = ["Porta-Aviões","Navio-Tanque","Navio-Tanque","Contratorpedeiro","Contratorpedeiro","Contratorpedeiro","Submarino","Submarino","Submarino","Submarino"]
-
--- the radius for the computer to search in, centered around any position where a player's ship was found
-searchRadius :: Int
-searchRadius = 1
+shipNames = ["Aircraft Carrier","Tank Ship","Tank Ship","Destroyer","Destroyer","Destroyer","Submarine","Submarine","Submarine","Submarine"]
 
 -- just for testing purposes
 testInputs :: [String]
