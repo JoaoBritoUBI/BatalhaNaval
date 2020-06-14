@@ -20,7 +20,7 @@ gameOverNumSpaces baseLength = (58 - baseLength - 3)
 -- AUXILIARY FUNCTIONS RELATED TO THE GAME'S INTERFACE (IMPURE)
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- shows the game's instructions
-showInstructions :: IO Coord
+showInstructions :: IO Bool
 showInstructions = do putStrLn "\no---------------------------------------------------------------------------------------------------------------------------o"
                       putStrLn "|                                                   BATTLESHIP IN HASKELL                                                   |"
                       putStrLn "o---------------------------------------------------------------------------------------------------------------------------o"
@@ -49,8 +49,10 @@ showInstructions = do putStrLn "\no---------------------------------------------
                       putStr "\n(Player) Press any key to start or \"q\" to leave the game > "
                       
                       enter <- getLine
-                      if(enter=="q") then return (-1,-1)
-                      else return (0,0)
+                      if(enter=="q") then do -- the player wants to leave the game
+                           putStrLn "\nLeaving the game...\n"
+                           return False
+                      else return True
 
 -- shows the "Ships Placement" interface
 showShipsPlacement :: IO ()

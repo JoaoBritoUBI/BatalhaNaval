@@ -20,10 +20,6 @@ shipSizes = [5,4,4,3,3,3,2,2,2,2]
 shipNames :: [[Char]]
 shipNames = ["Porta-Aviões","Navio-Tanque","Navio-Tanque","Contratorpedeiro","Contratorpedeiro","Contratorpedeiro","Submarino","Submarino","Submarino","Submarino"]
 
--- the amount of ships that can be placed on the board
-numShips :: Int
-numShips = length shipNames
-
 -- the radius for the computer to search in, centered around any position where a player's ship was found
 searchRadius :: Int
 searchRadius = 1

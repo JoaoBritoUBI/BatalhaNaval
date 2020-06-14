@@ -70,9 +70,24 @@ getShipCoords startCoord shipSize otherShips = do
                                                 if((length possibleShipsAux)==0) then []
                                                 else possibleShipsAux !! 0 -- choose one of the available positions
 
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY, GENERAL PURPOSE, FUNCTIONS (IMPURE)
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- checks if the game's settings are OK
+gameSettingsOK :: IO Bool
+gameSettingsOK = if(searchRadius<0) then do 
+                    putStrLn ("\nFATAL ERROR: The computer search radius (" ++ (show searchRadius) ++ ") can not be negative! Leaving the game...\n")
+                    return False
+                 else do
+                      if((length shipSizes)/=(length shipNames)) then do 
+                           putStrLn ("\nFATAL ERROR: The ships' names and respective sizes do not match! Leaving the game...\n")
+                           return False
+                      else do
+                         if((boardSize^2)<=(sum shipSizes)) then do 
+                              putStrLn ("\nFATAL ERROR: The board has " ++ (show (boardSize^2)) ++ " available cells, but the ships would need " ++ (show (sum shipSizes)) ++ "! Leaving the game...\n")
+                              return False
+                         else return True -- the settings are OK
+
 -- checks if the game has ended (i.e. when all the ships of one player have sunken)
 hasGameEnded :: GameState -> Int
 hasGameEnded state = do let playerWon = if((count Sunken (map (board (computerDefenseBoard state)) (concat (ships (computerDefenseBoard state)))))==(sum shipSizes)) then True else False

@@ -114,7 +114,7 @@ getComputerMove alreadyChosen checkerboard computerExploitSubArea = do if(not wi
 -- chooses where to place the player's ships
 initializePlayerShips :: Int -> [[Coord]] -> IO [[Coord]]
 initializePlayerShips currentShip finalList = do 
-                                                if(currentShip/=numShips) then do
+                                                if(currentShip/=(length shipNames)) then do
                                                     putStr ("\n" ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
                                                     
                                                     -- BEGIN TEST VERSION
@@ -163,7 +163,7 @@ initializePlayerShips currentShip finalList = do
 
 -- chooses where to place the computer's ships
 initializeComputerShips :: Int -> [[Coord]] -> IO [[Coord]]
-initializeComputerShips currentShip finalList = do if(currentShip/=numShips) then do -- pseudo-randomly choose where to place the computer's ships
+initializeComputerShips currentShip finalList = do if(currentShip/=(length shipNames)) then do -- pseudo-randomly choose where to place the computer's ships
 
                                                         startCoord <- getRandomCoordinates
                                                     
