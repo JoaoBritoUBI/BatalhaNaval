@@ -115,20 +115,19 @@ getComputerMove alreadyChosen checkerboard computerExploitSubArea = do if(not wi
 initializePlayerShips :: Int -> [[Coord]] -> IO [[Coord]]
 initializePlayerShips currentShip finalList = do 
                                                 if(currentShip/=numShips) then do
+                                                    putStr ("\n" ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
+                                                    
                                                     -- BEGIN TEST VERSION
                                                     --let n = testInputs !! currentShip
                                                     -- END TEST VERSION
                                                     
                                                     -- BEGIN FINAL VERSION
-                                                    
-                                                    putStr ("\n" ++ (shipNames !! currentShip) ++ " | len = " ++ show (shipSizes !! currentShip) ++ " > ")
-                                                    -- read and check the input
                                                     n <-  getLine
-
                                                     -- BEGIN FINAL VERSION
 
                                                     if(n=="q") then return [[(-1,-1)]] -- leave the game
-                                                    else do
+                                                    else do -- check the input
+                                                    
                                                         -- get the actual coordinates from the input string 
                                                         let coords = parseInput n
 
@@ -158,7 +157,9 @@ initializePlayerShips currentShip finalList = do
                                                                 putStrLn "(Player) The ship doesn't have the correct size! Try again!"
                                                                 initializePlayerShips currentShip finalList
                                                 
-                                                else return finalList
+                                                else do 
+                                                    putStr "\n"
+                                                    return finalList
 
 -- chooses where to place the computer's ships
 initializeComputerShips :: Int -> [[Coord]] -> IO [[Coord]]
