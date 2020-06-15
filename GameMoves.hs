@@ -32,11 +32,19 @@ masterCheckerboardWhite y finalList = if(y==boardSize) then finalList
 getUnvisitedNeighbours :: Coord -> [Coord] -> [Coord] -> [Coord]
 getUnvisitedNeighbours coord alreadyVisited nextMoves = filter (\(a,b) -> a>=0 && a<boardSize && b>=0 && b<boardSize && (not (elem (a,b) alreadyVisited)) && (not (elem (a,b) nextMoves))) [(fst coord + fst n, snd coord + snd n) | n <- [(0,-1),(-1,0),(0,1),(1,0)]]
 
--- removes the coordinate "coord" the from list "(y:ys)"
-removeCoordFromQueue :: Coord -> [Coord] -> [Coord]
-removeCoordFromQueue _ []                     = []
-removeCoordFromQueue coord (y:ys) | coord == y    = removeCoordFromQueue coord ys
-                                  | otherwise = y : removeCoordFromQueue coord ys
+-- checks if the coordinate "coord" is neighbour to the ship "ship"
+isShipNeighbour :: [Coord] -> Coord -> Bool
+isShipNeighbour ship coord = (filter (\(a,b) -> ((abs (fst coord - a)) + (abs (snd coord - b)))<=1) ship) /= []
+
+-- checks if the coordinate "coord" is neighbour to any "Hit" coordinate
+isHitNeighbour :: BoardF -> Coord -> Bool
+isHitNeighbour boardF coord = do let coordNeighbours = [((fst coord)+(fst n),(snd coord)+(snd n)) | n <- [(0,-1),(-1,0),(0,1),(1,0)]]
+                                 (filter (\(a,b) -> (boardF (a,b))==Hit) coordNeighbours) /= []
+
+-- removes every coordinate that is in direct contact with a "Sunken" coordinate
+removeSunkenShipNeighbours :: BoardF -> [Coord] -> [Coord] -> [Coord]
+removeSunkenShipNeighbours boardF ship list = do let toBeRemoved = (filter (\(a,b) -> not (isHitNeighbour boardF (a,b))) (filter (\(a,b) -> (isShipNeighbour ship (a,b))) list))
+                                                 filter (\(a,b) -> not (elem (a,b) toBeRemoved)) list
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS RELATED TO THE COMPUTER AND PLAYER'S MOVES (IMPURE)
@@ -84,15 +92,14 @@ getPlayerMove alreadyChosen = do n <- getLine
 
 -- chooses a coordinate for the computer's attack
 getComputerMove :: [Coord] -> [Coord] -> [Coord] -> IO Coord
-getComputerMove alreadyChosen checkerboard computernextMoves = do if(not wiseComputer) then do -- pseudo-randomly choose a coordinate for the computer's attack
+getComputerMove alreadyChosen checkerboard computerPriorityStack = do if(not wiseComputer) then do -- pseudo-randomly choose a coordinate for the computer's attack
                                                                         move <- getRandomCoordinates
                                                                         if(elem move alreadyChosen) then (getComputerMove alreadyChosen checkerboard [])
                                                                         else return move
                                                             
                                                                       else -- wisely choose a coordinate for the computer's attack
-                                                                        do if(computernextMoves/=[]) then do -- the computer has found a ship, let's explore the surrounding area and try to sink it
-                                                                            index <- (getRandomIndex (length computernextMoves))
-                                                                            return (computernextMoves !! index)
+                                                                        do if(computerPriorityStack/=[]) then do -- the computer has found a ship, let's explore the surrounding area and try to sink it
+                                                                            return (computerPriorityStack !! 0) -- grab the coordinate with the biggest priority
                                                                             
                                                                             else do -- the computer has not found any ship, it will guess at random (using the checkerboard method)
                                                                                 index <- (getRandomIndex (length checkerboard))

@@ -15,14 +15,14 @@ data GameState = GS
         playerOffenseBoard::Board, -- the board where the player attacks, without knowing where the computer's ships are
         playerMoves::[Coord], -- the history of moves by the player
         -- BEGIN TEST VERSION 
-        --playerNextMoves::[Coord], -- the next moves the player is likely to take
+        --playerPriorityStack::[Coord], -- the player's priority stack
         -- END TEST VERSION
 
         -- computer's boards
         computerDefenseBoard::Board, -- the board where the computer has its ships and the player attacks
         computerOffenseBoard::Board, -- the board where the computer attacks, without knowing where the player's ships are
         computerMoves::[Coord], -- the history of moves by the computer
-        computerNextMoves::[Coord] -- the next moves the computer is likely to take
+        computerPriorityStack::[Coord] -- the computer's priority stack
     } 
 
 -- the representation of a single board
@@ -41,14 +41,14 @@ initialState = GS
         playerOffenseBoard = emptyBoard,
         playerMoves = [],
         -- BEGIN TEST VERSION 
-        --playerNextMoves = [],
+        --playerPriorityStack = [],
         -- END TEST VERSION
 
         -- computer's boards
         computerDefenseBoard = emptyBoard,
         computerOffenseBoard = emptyBoard,
         computerMoves = [],
-        computerNextMoves = []
+        computerPriorityStack = []
     }
 
 -- the starter board (i.e. all cells are empty)

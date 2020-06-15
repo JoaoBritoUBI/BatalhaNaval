@@ -10,6 +10,11 @@ import Data.List
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- AUXILIARY, GENERAL PURPOSE, FUNCTIONS (PURE)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- safe implementation of the the "tail" function (if the list is empty, this version does not raise an exception)
+safeTail :: [Coord] -> [Coord]
+safeTail []   = []
+safeTail list = tail list
+
 -- transforms a tuple of lists into a list of lists (with a special case for the second part "b")
 tupleToList :: ([Char],[Char]) -> [[Char]]
 tupleToList (a,b) = [a,tail b]
@@ -51,7 +56,7 @@ getIntermediateCoords startCoord endCoord = if(startCoord<endCoord) then [(a,b) 
 
 -- checks if the ships "shipCoords" doesn't overlap with any other ship
 doesntOverlap :: [Coord] -> [[Coord]] -> Bool
-doesntOverlap shipCoords [] = True
+doesntOverlap shipCoords []     = True
 doesntOverlap shipCoords (x:xs) = if((length (filter (\e -> elem e shipCoords) x))==0) then doesntOverlap shipCoords xs else False
 
 -- attempts to position a ship with size "shipSize" starting from coordinates "startCoord"
@@ -98,12 +103,12 @@ hasGameEnded state = do let playerWon = if((count Sunken (map (board (computerDe
 -- retrieves the Coord value encapsulated by the Maybe type
 fromJust :: Maybe Coord -> Coord
 fromJust (Just a) = a
-fromJust Nothing = (-1,-1)
+fromJust Nothing  = (-1,-1)
 
 -- retrieves the Int value encapsulated by the Maybe type
 fromJustInt :: Maybe Int -> Int
 fromJustInt (Just a) = a
-fromJustInt Nothing = -1
+fromJustInt Nothing  = -1
 
 -- split the input string ("string") on the given character "char"
 splitOn :: Char -> String -> [String]

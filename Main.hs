@@ -56,19 +56,19 @@ play init = do state <- get
                 -- print both of the player's boards
                 liftIO$(showPlayerBoards state)
                 
-                ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                ----------------------------------------------------------------------------------------------------------------------------
                 -- register the player and computer's moves
-                ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                ----------------------------------------------------------------------------------------------------------------------------
                 state <- get
                 
                 -- BEGIN TEST VERSION
                 {--
-                -- get the computer's move
+                -- get the player's move
                 let checkerboardBlack = filter (\x -> not (elem x (playerMoves state))) (masterCheckerboardBlack 0 [])
                 let checkerboardWhite = filter (\x -> not (elem x (playerMoves state))) (masterCheckerboardWhite 0 [])
                 let checkerboard = if(checkerboardBlack/=[]) then checkerboardBlack else checkerboardWhite
 
-                playerMove <- liftIO$(getplayerMove (playerMoves state) checkerboard (playerNextMoves state))
+                playerMove <- liftIO$(getComputerMove (playerMoves state) checkerboard (playerPriorityStack state))
                 liftIO$(putStrLn ("\n(player) Attack position > " ++ (show playerMove)))
                 --}
                 -- END TEST VERSION
@@ -88,7 +88,7 @@ play init = do state <- get
                     let checkerboardWhite = filter (\x -> not (elem x (computerMoves state))) (masterCheckerboardWhite 0 [])
                     let checkerboard = if(checkerboardBlack/=[]) then checkerboardBlack else checkerboardWhite
 
-                    computerMove <- liftIO$(getComputerMove (computerMoves state) checkerboard (computerNextMoves state))
+                    computerMove <- liftIO$(getComputerMove (computerMoves state) checkerboard (computerPriorityStack state))
                     liftIO$(putStrLn ("\n(Computer) Attack position > " ++ (show computerMove)))
 
                     -- save the new information
@@ -97,23 +97,15 @@ play init = do state <- get
                         playerMoves = (playerMoves state) ++ [playerMove],
 
                         -- update the computer's part
-                        computerMoves = (computerMoves state) ++ [computerMove],
-
-                        -- update the computer's next moves
-                        computerNextMoves = (removeCoordFromQueue computerMove (computerNextMoves state))
-
-                        -- BEGIN TEST VERSION 
-                        -- update the player's next moves
-                        --playerNextMoves = (drop 1 (playerNextMoves state))
-                        -- END TEST VERSION 
+                        computerMoves = (computerMoves state) ++ [computerMove]
                     }
                     
                     -- show the "Round Info" interface
                     liftIO$showRoundInfo
 
-                    ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------
                     -- deal with the player's move
-                    ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------
                     state <- get
                     if(hasShip playerMove (ships (computerDefenseBoard state))) then 
                         do
@@ -130,6 +122,17 @@ play init = do state <- get
                                     -- update the computer's defense board
                                     computerDefenseBoard = (computerDefenseBoard state) {board = (\x -> if(elem x ship) then Sunken else ((board (computerDefenseBoard state)) x))}
                                 }
+                                -- BEGIN TEST VERSION
+                                {--
+                                state <- get
+
+                                put state {
+
+                                    -- update the player's priority stack
+                                    playerPriorityStack = (removeSunkenShipNeighbours (board (playerOffenseBoard state)) ship (safeTail (playerPriorityStack state)))
+                                }
+                                --}
+                                -- END TEST VERSION
 
                             else -- case where a part of a ship was bombed
                                 do
@@ -141,9 +144,9 @@ play init = do state <- get
                                     -- update the computer's defense board
                                     computerDefenseBoard = (computerDefenseBoard state) {board = (\x -> if(x==playerMove) then Hit else ((board (computerDefenseBoard state)) x))}
 
-                                    -- update the player's next moves
                                     -- BEGIN TEST VERSION
-                                    --playerNextMoves = ((playerNextMoves state) ++ (getUnvisitedNeighbours playerMove (playerMoves state) (playerNextMoves state)))
+                                    -- update the player's priority stack
+                                    --playerPriorityStack = (getUnvisitedNeighbours playerMove (playerMoves state) (playerPriorityStack state)) ++ (safeTail (playerPriorityStack state))
                                     -- END TEST VERSION
                                 }
 
@@ -156,11 +159,16 @@ play init = do state <- get
                                 
                                 -- update the computer's defense board
                                 computerDefenseBoard = (computerDefenseBoard state) {board = (\x -> if(x==playerMove) then Miss else ((board (computerDefenseBoard state)) x))}
+                                
+                                -- BEGIN TEST VERSION
+                                -- update the player's priority stack
+                                --playerPriorityStack = (safeTail (playerPriorityStack state))
+                                -- END TEST VERSION
                             }
 
-                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                     -- deal with the computer's move
-                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                     state <- get
                     if(hasShip computerMove (ships (playerDefenseBoard state))) then 
                         do
@@ -178,6 +186,14 @@ play init = do state <- get
                                     playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(elem x ship) then Sunken else ((board (playerDefenseBoard state)) x))}
                                 }
 
+                                state <- get
+
+                                put state {
+
+                                    -- update the computer's priority stack
+                                    computerPriorityStack = (removeSunkenShipNeighbours (board (computerOffenseBoard state)) ship (safeTail (computerPriorityStack state)))
+                                }
+
                             else -- case where a part of a ship was bombed
                                 do
                                 liftIO$(showComputerRoundInfo computerMove Hit)
@@ -189,8 +205,8 @@ play init = do state <- get
                                     -- update the player's defense board
                                     playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(x==computerMove) then Hit else ((board (playerDefenseBoard state)) x))},
 
-                                    -- update the computer's next moves
-                                    computerNextMoves = ((computerNextMoves state) ++ (getUnvisitedNeighbours computerMove (computerMoves state) (computerNextMoves state)))
+                                    -- update the computer's priority stack
+                                    computerPriorityStack = (getUnvisitedNeighbours computerMove (computerMoves state) (computerPriorityStack state)) ++ (safeTail (computerPriorityStack state))
                                 }
 
                     else -- case where the computer didn't hit anything
@@ -201,12 +217,13 @@ play init = do state <- get
                                 computerOffenseBoard = (computerOffenseBoard state) {board = (\x -> if(x==computerMove) then Miss else ((board (computerOffenseBoard state)) x))},
                                 
                                 -- update the computer's defense board
-                                playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(x==computerMove) then Miss else ((board (playerDefenseBoard state)) x))}
+                                playerDefenseBoard = (playerDefenseBoard state) {board = (\x -> if(x==computerMove) then Miss else ((board (playerDefenseBoard state)) x))},
+
+                                -- update the computer's priority stack
+                                computerPriorityStack = (safeTail (computerPriorityStack state))
                             }
 
                     liftIO$showSingleLine
-                    state <- get
-                    liftIO$print (computerNextMoves state)
 
                     -----------------------------------------------------------------------------------------
                     -- detect when the game ends and show the "Game Over" interface 
