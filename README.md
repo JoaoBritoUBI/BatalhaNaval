@@ -129,34 +129,6 @@ o--------------------------------------------------------o
 o--------------------------------------------------------o
 ```
 
-## Changes to the Base Code
-* Added the type ***PrettyBoard*** to allow us to print each line's number;
-
-* Added a function to print every column's number (***rowOfNumbers***);
-
-* Added the ***wiseComputer*** boolean to control the computer's behaviour;
-
-* Added an initial game state (***initialState***) and an instance of ***Show*** for ***GameState***;
-
-* ...
-
-## Smarter Computer
-* Added a smarter computer, one that balances **exploration** with **exploitation**. At first it **randomly explores** (using the **checkerboard** method) and then, after hitting a ship, the computer **exploits it and tries to take it down**. After doing so, the computer will eventually explore again in random directions.
-
-## Conclusion
-In general, the code makes use of both generic and Haskell specific functionalities, among which:
-
-* List Comprehension;
-* Curried Functions;
-* Lambda Expressions;
-* IO Actions;
-* State Transformer;
-* Data Records;
-* Type Synonyms;
-* Recursion.
-
-Additionally, we made sure that we **gave each function a purpose** and **divided the tasks into functions**, rather than having one really big function to do it all. This approach gave the code more readability and a "functional" look and feel.
-
 ## Side Note
 If needed, the code can be modified to put 2 computers against each other. To do so, one can **uncomment** every line within a ***BEGIN TEST VERSION*** ... ***END TEST VERSION*** block and, conversely, **comment** every line within a ***BEGIN FINAL VERSION*** ... ***END FINAL VERSION*** block.
 
