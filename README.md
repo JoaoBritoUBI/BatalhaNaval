@@ -1,6 +1,8 @@
 **Battleship in Haskell**
 
-**Developed by:** João Brito (m9984) and André Martins (m10157)
+**Developed by:** João Brito (m9984) and André Martins (m10157).
+
+*More details at www.joaopedrobrito.com/projects/battleship.*
 
 # Description
 This project allows the user to **play a game of *Battleship* against the computer**. It was implemented in **Haskell** and runs on a CLI.
