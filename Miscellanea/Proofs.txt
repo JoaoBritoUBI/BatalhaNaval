@@ -1,0 +1,35 @@
+---------------------------------------------
+João Brito (m9984) and André Martins (m10157)
+---------------------------------------------
+
+-------------------
+Proof 1:
+-------------------
+(return . h)  g
+={Suposição 2 (DE)}
+(return  g) . h
+={Suposição 3}
+g . h
+
+-----------------------------------------------
+Proof 2:
+-----------------------------------------------
+concatm . mapm (mapm f)
+= {Definição de "mapm"}
+concatm . mapm (id  (return . f))
+= {Definição de "mapm"}
+concatm . id  (return . (id  (return . f)))
+= {Definição de "concatm"}
+(id  id) . id  (return . (id  (return . f)))
+={Suposição 2}
+(id . id)  id  (return . (id  (return . f)))
+={id . id = id pois "id" é absorvente}
+id  id  (return . (id  (return . f)))
+={Definição de "concatm" (DE)}
+concatm  (return . (id  (return . f)))
+={Definição de "mapm" (DE)}
+concatm  (return . mapm f)
+={Suposição 2}
+mapm f . (return  concatm)
+={Suposição 3}
+mapm f . concatm
